@@ -1,0 +1,10 @@
+{
+  "name": "com.kukumberman.unity-core-template",
+  "version": "1.0.0",
+  "displayName": "Unity Core Template",
+  "description": "todo",
+  "unity": "2021.3",
+  "dependencies": {
+  	"com.unity.nuget.newtonsoft-json": "3.1.0"
+  }
+}
