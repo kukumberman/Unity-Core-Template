@@ -11,8 +11,7 @@ namespace Game.Domain
     {
         private const string SAVE_KEY = "save.json";
 
-        //test
-        private static readonly ISaveSystem SAVE_SYSTEM = new FileSaveSystem();
+        public static ISaveSystem CurrentSaveSystem = new FileSaveSystem();
 
         protected abstract void PopulateDefaultModel(GameConfig config);
 
@@ -22,7 +21,7 @@ namespace Game.Domain
 
             try
             {
-                var data = SAVE_SYSTEM.GetString(SAVE_KEY);
+                var data = CurrentSaveSystem.GetString(SAVE_KEY);
                 if (string.IsNullOrEmpty(data))
                 {
                     result.PopulateDefaultModel(config);
@@ -50,7 +49,7 @@ namespace Game.Domain
 
             try
             {
-                SAVE_SYSTEM.SetString(SAVE_KEY, JsonConvert.SerializeObject(this, settings));
+                CurrentSaveSystem.SetString(SAVE_KEY, JsonConvert.SerializeObject(this, settings));
             }
             catch (Exception e)
             {
@@ -60,7 +59,7 @@ namespace Game.Domain
 
         public static void Reset()
         {
-            SAVE_SYSTEM.Remove(SAVE_KEY);
+            CurrentSaveSystem.Remove(SAVE_KEY);
         }
 
 #if UNITY_EDITOR
