@@ -12,6 +12,7 @@ namespace Game.Domain
         private const string SAVE_KEY = "save.json";
 
         public static ISaveSystem CurrentSaveSystem = new FileSaveSystem();
+        public static ISaveEncoderDecoder CurrentSaveEncoderDecoder = null;
 
         protected abstract void PopulateDefaultModel(GameConfig config);
 
@@ -22,6 +23,10 @@ namespace Game.Domain
             try
             {
                 var data = CurrentSaveSystem.GetString(SAVE_KEY);
+                if (CurrentSaveEncoderDecoder != null)
+                {
+                    data = CurrentSaveEncoderDecoder.Decode(data);
+                }
                 if (string.IsNullOrEmpty(data))
                 {
                     result.PopulateDefaultModel(config);
@@ -49,7 +54,12 @@ namespace Game.Domain
 
             try
             {
-                CurrentSaveSystem.SetString(SAVE_KEY, JsonConvert.SerializeObject(this, settings));
+                var data = JsonConvert.SerializeObject(this, settings);
+                if (CurrentSaveEncoderDecoder != null)
+                {
+                    data = CurrentSaveEncoderDecoder.Encode(data);
+                }
+                CurrentSaveSystem.SetString(SAVE_KEY, data);
             }
             catch (Exception e)
             {

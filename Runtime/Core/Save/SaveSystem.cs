@@ -3,6 +3,13 @@ using UnityEngine;
 
 namespace Game.Core
 {
+    public interface ISaveEncoderDecoder
+    {
+        string Encode(string data);
+
+        string Decode(string data);
+    }
+
     public interface ISaveSystem
     {
         string GetString(string key);
