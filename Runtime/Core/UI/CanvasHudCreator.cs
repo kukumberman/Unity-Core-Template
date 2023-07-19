@@ -1,4 +1,5 @@
 using System;
+using Game.Enums;
 using Game.UI.Hud;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace Game.Core.UI
 
         private readonly Canvas _canvas;
 
+        public HudOrientation Orientation { get; set; }
+
         public CanvasHudCreator(Canvas canvas)
         {
             _canvas = canvas;
@@ -17,7 +20,8 @@ namespace Game.Core.UI
 
         public void Create(Mediator hud)
         {
-            var fileName = hud.GetType().Name.Replace("HudMediator", "");
+            var suffix = Orientation == HudOrientation.Default ? string.Empty : $"_{Orientation}";
+            var fileName = hud.GetType().Name.Replace("HudMediator", "") + suffix;
             var hudPrefab = Resources.Load<BaseHud>(string.Format(kHudsPath, fileName));
 
             if (null == hudPrefab)

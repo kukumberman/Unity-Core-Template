@@ -1,4 +1,5 @@
 using Game.Core.UI;
+using Game.Enums;
 using Injection;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,13 @@ namespace Game.Managers
         private Mediator _openedHud;
         private readonly List<Mediator> _additionalHuds;
 
-        public readonly IHudCreator _creator;
+        private readonly IHudCreator _creator;
+
+        public HudOrientation Orientation
+        {
+            get => _creator.Orientation;
+            set => _creator.Orientation = value;
+        }
 
         public HudManager(IHudCreator creator)
         {

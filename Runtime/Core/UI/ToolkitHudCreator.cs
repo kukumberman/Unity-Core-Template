@@ -1,3 +1,4 @@
+using Game.Enums;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace Game.Core.UI
 
         private readonly UIDocument _document;
 
+        public HudOrientation Orientation { get; set; }
+
         public ToolkitHudCreator(UIDocument document)
         {
             _document = document;
@@ -18,7 +21,8 @@ namespace Game.Core.UI
 
         public void Create(Mediator hud)
         {
-            var fileName = hud.GetType().Name.Replace("HudMediator", "");
+            var suffix = Orientation == HudOrientation.Default ? string.Empty : $"_{Orientation}";
+            var fileName = hud.GetType().Name.Replace("HudMediator", "") + suffix;
             var treeAsset = Resources.Load<VisualTreeAsset>(string.Format(kHudsPath, fileName));
 
             if (treeAsset == null)
