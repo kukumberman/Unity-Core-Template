@@ -2,8 +2,7 @@
 
 namespace Injection
 {
-    // csharpier-ignore
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Constructor, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class Inject : Attribute
     {
         public readonly string Name;

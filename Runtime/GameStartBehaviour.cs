@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game.Core;
 using Game.Managers;
 using Game.States;
@@ -13,6 +15,15 @@ namespace Game
     {
         public Func<GameState> InitialStateFunc = null;
 
+        [SerializeField]
+        private int _injectionDepth;
+
+        [SerializeField]
+        private List<MonoBehaviour> _injectableMonoBehaviours;
+
+        [SerializeField]
+        private List<ScriptableObject> _injectableScriptableObjects;
+
         private Timer _timer;
 
         public Context Context { get; private set; }
@@ -26,6 +37,8 @@ namespace Game
             Application.runInBackground = true;
 
             var context = new Context();
+            Context = context;
+            Context.Current = context;
 
             var gameView = GetComponent<GameView>();
             var hudManager = new HudManager(new CanvasHudCreator(gameView.Canvas));
@@ -40,8 +53,8 @@ namespace Game
 
             context.InstallByName("ToolkitHudManager", toolkitHudManager);
 
-            context.Install(GetComponents<Component>());
             context.Install(_timer);
+            Install();
             context.ApplyInstall();
 
             if (InitialStateFunc == null)
@@ -51,8 +64,6 @@ namespace Game
 
             GameState next = InitialStateFunc();
             context.Get<GameStateManager>().SwitchToState(next);
-
-            Context = context;
         }
 
         // csharpier-ignore
@@ -89,6 +100,70 @@ namespace Game
             {
                 _timer.OnDrawGizmos();
             }
+        }
+
+        private void Install()
+        {
+            Context.Install(this);
+
+            var injectables = new List<UnityEngine.Object>();
+            injectables.AddRange(_injectableMonoBehaviours);
+            injectables.AddRange(_injectableScriptableObjects);
+
+            var childrens = GetChildrenDeeply(transform, _injectionDepth);
+            for (int i = 0, length = childrens.Count; i < length; i++)
+            {
+                injectables.AddRange(childrens[i].GetComponents<MonoBehaviour>());
+            }
+
+            var uniqueInjectables = new HashSet<UnityEngine.Object>(injectables).ToList();
+
+            for (int i = 0, length = uniqueInjectables.Count; i < length; i++)
+            {
+                var item = uniqueInjectables[i];
+
+                var attributeObject = item.GetType()
+                    .GetCustomAttributes(typeof(Injectable), true)
+                    .FirstOrDefault();
+
+                if (attributeObject != null)
+                {
+                    var attribute = attributeObject as Injectable;
+
+                    if (attribute.Type != null)
+                    {
+                        Context.InstallByType(item, attribute.Type);
+                    }
+                    else
+                    {
+                        Context.Install(item);
+                    }
+                }
+                else
+                {
+                    Context.Install(item);
+                }
+            }
+        }
+
+        private static List<Transform> GetChildrenDeeply(Transform parent, int depth)
+        {
+            var result = new List<Transform>();
+
+            result.Add(parent);
+
+            if (depth <= 0)
+            {
+                return result;
+            }
+
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                var child = parent.GetChild(i);
+                result.AddRange(GetChildrenDeeply(child, depth - 1));
+            }
+
+            return result;
         }
     }
 }

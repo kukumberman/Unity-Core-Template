@@ -5,6 +5,8 @@ namespace Injection
 {
     public sealed class Context : IDisposable
     {
+        public static Context Current { get; set; }
+
         private readonly Dictionary<Type, object> _objectsMap;
         private readonly Dictionary<string, object> _objectsByNameMap;
 
