@@ -73,7 +73,7 @@ namespace Game.Domain
         }
 
 #if UNITY_EDITOR
-        [UnityEditor.MenuItem("Tools/Remove model")]
+        [UnityEditor.MenuItem("Tools/Remove save")]
 #endif
         private static void Remove()
         {
@@ -95,16 +95,22 @@ namespace Game.Domain
         [UnityEditor.MenuItem("Tools/Show save file")]
         private static void Show()
         {
+            string arguments;
             var path = FileSaveSystem.GetSavePath(SAVE_KEY).Replace("/", @"\");
             if (!System.IO.File.Exists(path))
             {
-                return;
+                path = System.IO.Path.GetDirectoryName(path);
+                arguments = $"\"{path}\"";
+            }
+            else
+            {
+                arguments = $"/select,\"{path}\"";
             }
 
             var info = new System.Diagnostics.ProcessStartInfo
             {
                 FileName = "explorer.exe",
-                Arguments = $"/select,\"{path}\"",
+                Arguments = arguments,
             };
 
             var process = System.Diagnostics.Process.Start(info);
