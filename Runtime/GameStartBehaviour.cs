@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Core;
+using Game.Domain;
 using Game.Managers;
 using Game.States;
 using Game.UI;
@@ -39,6 +40,12 @@ namespace Game
             var context = new Context();
             Context = context;
             Context.Current = context;
+
+#if UNITY_WEBGL
+            GameModel.CurrentSaveSystem = new WebglSaveSystem();
+#else
+            GameModel.CurrentSaveSystem = new FileSaveSystem();
+#endif
 
             var gameView = GetComponent<GameView>();
             var hudManager = new HudManager(new CanvasHudCreator(gameView.Canvas));

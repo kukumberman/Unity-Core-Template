@@ -11,7 +11,7 @@ namespace Game.Domain
     {
         private const string SAVE_KEY = "save.json";
 
-        public static ISaveSystem CurrentSaveSystem = new FileSaveSystem();
+        public static ISaveSystem CurrentSaveSystem = null;
         public static ISaveEncoderDecoder CurrentSaveEncoderDecoder = null;
 
         protected abstract void PopulateDefaultModel(GameConfig config);
