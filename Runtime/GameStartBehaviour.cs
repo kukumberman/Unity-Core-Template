@@ -41,7 +41,7 @@ namespace Game
             Context = context;
             Context.Current = context;
 
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
             GameModel.CurrentSaveSystem = new WebglSaveSystem();
 #else
             GameModel.CurrentSaveSystem = new FileSaveSystem();
