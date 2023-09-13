@@ -1,0 +1,76 @@
+using System;
+using Core;
+using Game.Core.UI;
+using Game.Managers;
+using Game.UI.Hud;
+using Injection;
+using UnityEngine;
+using UnityEngine.UI;
+using Text = TMPro.TextMeshProUGUI;
+
+namespace Project.UI
+{
+    public sealed class MyHudModel : Observable
+    {
+        public int Counter;
+    }
+
+    public sealed class MyHudView : BaseHudWithModel<MyHudModel>
+    {
+        public event Action OnButtonClicked;
+
+        [SerializeField]
+        private Button _btn;
+
+        [SerializeField]
+        private Text _txt;
+
+        protected override void OnEnable()
+        {
+            _btn.onClick.AddListener(ButtonClickHandler);
+        }
+
+        protected override void OnDisable()
+        {
+            _btn.onClick.RemoveListener(ButtonClickHandler);
+        }
+
+        protected override void OnModelChanged(MyHudModel model)
+        {
+            _txt.text = $"{model.Counter}";
+        }
+
+        private void ButtonClickHandler()
+        {
+            OnButtonClicked.SafeInvoke();
+        }
+    }
+
+    public sealed class MyHudMediator : Mediator<MyHudView>
+    {
+        [Inject]
+        private HudManager _;
+
+        private MyHudModel _viewModel;
+
+        protected override void Show()
+        {
+            _view.OnButtonClicked += View_OnButtonClicked;
+
+            _viewModel = new MyHudModel { Counter = 0, };
+
+            _view.Model = _viewModel;
+        }
+
+        protected override void Hide()
+        {
+            _view.OnButtonClicked -= View_OnButtonClicked;
+        }
+
+        private void View_OnButtonClicked()
+        {
+            _viewModel.Counter += 1;
+            _viewModel.SetChanged();
+        }
+    }
+}

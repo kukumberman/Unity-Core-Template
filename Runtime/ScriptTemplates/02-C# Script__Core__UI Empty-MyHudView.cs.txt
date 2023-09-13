@@ -1,0 +1,63 @@
+using System;
+using Core;
+using Game.Core.UI;
+using Game.Managers;
+using Game.UI.Hud;
+using Injection;
+using UnityEngine;
+using UnityEngine.UI;
+using Text = TMPro.TextMeshProUGUI;
+
+namespace Project.UI
+{
+    public sealed class MyHudModel : Observable
+    {
+        //
+    }
+
+    public sealed class MyHudView : BaseHudWithModel<MyHudModel>
+    {
+        public event Action OnButtonClicked;
+
+        [SerializeField]
+        private Button _btn;
+
+        [SerializeField]
+        private Text _txt;
+
+        protected override void OnEnable()
+        {
+            //
+        }
+
+        protected override void OnDisable()
+        {
+            //
+        }
+
+        protected override void OnModelChanged(MyHudModel model)
+        {
+            //
+        }
+    }
+
+    public sealed class MyHudMediator : Mediator<MyHudView>
+    {
+        [Inject]
+        private HudManager _;
+
+        private MyHudModel _viewModel;
+
+        protected override void Show()
+        {
+            _viewModel = new MyHudModel { };
+
+            _view.Model = _viewModel;
+        }
+
+        protected override void Hide()
+        {
+            //
+        }
+    }
+}
