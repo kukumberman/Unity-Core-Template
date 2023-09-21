@@ -25,6 +25,8 @@ namespace Game.Managers
             set => _creator.Orientation = value;
         }
 
+        public IHudCreator Creator => _creator;
+
         public HudManager(IHudCreator creator)
         {
             _creator = creator;
@@ -41,7 +43,8 @@ namespace Game.Managers
             return null != _openedHud;
         }
 
-        public T ShowSingle<T>(params object[] args) where T : Mediator
+        public T ShowSingle<T>(params object[] args)
+            where T : Mediator
         {
             if (null != _openedHud)
             {
@@ -77,7 +80,8 @@ namespace Game.Managers
             _additionalHuds.Add(hud);
         }
 
-        public T ShowAdditional<T>(params object[] args) where T : Mediator
+        public T ShowAdditional<T>(params object[] args)
+            where T : Mediator
         {
             var opened = _additionalHuds.FirstOrDefault(temp => temp is T);
             if (null != opened)
@@ -91,7 +95,8 @@ namespace Game.Managers
             return (T)hud;
         }
 
-        public void HideAdditional<T>() where T : Mediator
+        public void HideAdditional<T>()
+            where T : Mediator
         {
             for (int i = _additionalHuds.Count - 1; i >= 0; i--)
             {

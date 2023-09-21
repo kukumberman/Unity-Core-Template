@@ -1,5 +1,7 @@
 using Game.Enums;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,6 +15,8 @@ namespace Game.Core.UI
         private readonly UIDocument _document;
 
         public HudOrientation Orientation { get; set; }
+
+        private Dictionary<Type, Func<VisualElement>> _factoryMap = new();
 
         public ToolkitHudCreator(UIDocument document)
         {
@@ -31,11 +35,28 @@ namespace Game.Core.UI
             }
 
             var root = _document.rootVisualElement.Q<VisualElement>("root");
-            var view = treeAsset.Instantiate().Children().ElementAt(0);
+            var templateView = treeAsset.Instantiate().Children().ElementAt(0);
+
+            var view = _factoryMap[hud.ViewType]();
+            view.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+            view.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+            view.Add(templateView);
+
+            var methodInfo = view.GetType()
+                .GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.NonPublic);
+            methodInfo.Invoke(view, null);
             root.Add(view);
 
             hud.Mediate(view);
             hud.InternalShow();
+        }
+
+        public void Bind(Type type, Func<VisualElement> element)
+        {
+            if (!_factoryMap.ContainsKey(type))
+            {
+                _factoryMap.Add(type, element);
+            }
         }
     }
 }

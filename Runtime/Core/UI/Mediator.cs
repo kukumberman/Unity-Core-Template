@@ -1,6 +1,5 @@
 ﻿using Game.UI.Hud;
 using System;
-using UnityEngine;
 
 namespace Game.Core.UI
 {
@@ -22,9 +21,10 @@ namespace Game.Core.UI
         public abstract void InternalHide();
     }
 
-    public abstract class Mediator<T> : Mediator where T : IHud
+    public abstract class Mediator<T> : Mediator
+        where T : IHud
     {
-        private bool _isShowed;
+        private bool _isActive;
         protected T _view;
         public override Type ViewType => typeof(T);
         protected T View => _view;
@@ -32,16 +32,16 @@ namespace Game.Core.UI
         public sealed override void Mediate(object view)
         {
             _view = (T)view;
-            _isShowed = false;
+            _isActive = false;
         }
 
         public sealed override void Unmediate()
         {
-            if (_isShowed)
+            if (_isActive)
             {
                 Hide();
             }
-            GameObject.Destroy(_view.GameObject);
+            _view.Remove();
             _view = default(T);
         }
 
