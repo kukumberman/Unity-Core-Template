@@ -17,19 +17,19 @@ namespace Game.Managers
         private Mediator _openedHud;
         private readonly List<Mediator> _additionalHuds;
 
-        private readonly IHudCreator _creator;
+        private readonly IHudFactory _hudFactory;
 
         public HudOrientation Orientation
         {
-            get => _creator.Orientation;
-            set => _creator.Orientation = value;
+            get => _hudFactory.Orientation;
+            set => _hudFactory.Orientation = value;
         }
 
-        public IHudCreator Creator => _creator;
+        public IHudFactory HudFactory => _hudFactory;
 
-        public HudManager(IHudCreator creator)
+        public HudManager(IHudFactory creator)
         {
-            _creator = creator;
+            _hudFactory = creator;
             _additionalHuds = new List<Mediator>();
         }
 
@@ -54,7 +54,7 @@ namespace Game.Managers
             _openedHud = (Mediator)Activator.CreateInstance(typeof(T), args);
             _injector.Inject(_openedHud);
 
-            _creator.Create(_openedHud);
+            _hudFactory.Create(_openedHud);
 
             SINGLE_HUD_OPENED.SafeInvoke(true);
 
@@ -76,7 +76,7 @@ namespace Game.Managers
         public void ShowAdditional(Mediator hud)
         {
             _injector.Inject(hud);
-            _creator.Create(hud);
+            _hudFactory.Create(hud);
             _additionalHuds.Add(hud);
         }
 

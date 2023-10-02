@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Core.UI
 {
-    public sealed class CanvasHudCreator : IHudCreator
+    public sealed class HudFactoryUGUI : IHudFactory
     {
         private const string kHudsPath = "Huds/{0}";
 
@@ -13,7 +13,7 @@ namespace Game.Core.UI
 
         public HudOrientation Orientation { get; set; }
 
-        public CanvasHudCreator(Canvas canvas)
+        public HudFactoryUGUI(Canvas canvas)
         {
             _canvas = canvas;
         }

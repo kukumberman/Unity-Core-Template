@@ -2,7 +2,7 @@ using Game.Enums;
 
 namespace Game.Core.UI
 {
-    public interface IHudCreator
+    public interface IHudFactory
     {
         HudOrientation Orientation { get; set; }
 

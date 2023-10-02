@@ -48,8 +48,8 @@ namespace Game
 #endif
 
             var gameView = GetComponent<GameView>();
-            var hudManager = new HudManager(new CanvasHudCreator(gameView.Canvas));
-            var toolkitHudManager = new HudManager(new ToolkitHudCreator(gameView.Document));
+            var hudManager = new HudManager(new HudFactoryUGUI(gameView.Canvas));
+            var hudManagerUITK = new HudManager(new HudFactoryUITK(gameView.Document));
 
             context.Install(
                 new Injector(context),
@@ -58,7 +58,8 @@ namespace Game
                 new SpriteManager()
             );
 
-            context.InstallByName("ToolkitHudManager", toolkitHudManager);
+            context.InstallByName("HudManager_UGUI", hudManager);
+            context.InstallByName("HudManager_UITK", hudManagerUITK);
 
             context.Install(_timer);
             Install();

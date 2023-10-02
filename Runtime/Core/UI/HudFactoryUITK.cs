@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace Game.Core.UI
 {
-    public class ToolkitHudCreator : IHudCreator
+    public class HudFactoryUITK : IHudFactory
     {
         private const string kHudsPath = "Huds/{0}";
 
@@ -18,7 +18,7 @@ namespace Game.Core.UI
 
         private Dictionary<Type, Func<VisualElement>> _factoryMap = new();
 
-        public ToolkitHudCreator(UIDocument document)
+        public HudFactoryUITK(UIDocument document)
         {
             _document = document;
         }
