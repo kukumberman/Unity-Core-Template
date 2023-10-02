@@ -70,46 +70,6 @@ namespace UnityEditor
             public FindReferencesUtils.Result Result;
         }
 
-        [MenuItem("Tools/Parse sound names")]
-        private static void ParseSoundNames()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var item in Selection.objects)
-            {
-                var name = item.name;
-
-                string renamedName = name.Replace(" ", "_");
-                for (int i = 0; i < 255; i++)
-                {
-                    var symbol = (char)i;
-
-                    if (!char.IsLower(symbol))
-                        continue;
-
-                    renamedName = renamedName.Replace("_" + symbol, "_" + char.ToUpper(symbol));
-                }
-
-                if (char.IsLower(renamedName[0]))
-                {
-                    renamedName = renamedName.Insert(0, char.ToUpper(renamedName[0]).ToString());
-                    renamedName = renamedName.Remove(1, 1);
-                }
-
-                if (!name.Equals(renamedName))
-                {
-                    var path = Application.dataPath + AssetDatabase.GetAssetPath(item);
-                    path = path.Replace("AssetsAssets", "Assets");
-
-                    File.Move(path, path.Replace(name, renamedName));
-                }
-
-                sb.AppendFormat("public const string {0} = \"{1}\";\n",
-                    item.name.Replace("_", string.Empty).Replace(" ", string.Empty), item.name.Replace(" ", "_"));
-            }
-            Debug.Log(sb.ToString());
-        }
-
         [MenuItem("Tools/Clear References In Project")]
         private static void ClearReferences()
         {
