@@ -103,7 +103,7 @@ namespace Game
 
         private void OnDrawGizmos()
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying && enabled && _timer != null)
             {
                 _timer.OnDrawGizmos();
             }
