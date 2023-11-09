@@ -118,7 +118,7 @@ namespace Game
             injectables.AddRange(_injectableMonoBehaviours);
             injectables.AddRange(_injectableScriptableObjects);
 
-            var childrens = GetChildrenDeeply(transform, _injectionDepth);
+            var childrens = UnityExtensions.GetChildrenDeeply(transform, _injectionDepth);
             for (int i = 0, length = childrens.Count; i < length; i++)
             {
                 injectables.AddRange(childrens[i].GetComponents<MonoBehaviour>());
@@ -152,26 +152,6 @@ namespace Game
                     Context.Install(item);
                 }
             }
-        }
-
-        private static List<Transform> GetChildrenDeeply(Transform parent, int depth)
-        {
-            var result = new List<Transform>();
-
-            result.Add(parent);
-
-            if (depth <= 0)
-            {
-                return result;
-            }
-
-            for (int i = 0; i < parent.childCount; i++)
-            {
-                var child = parent.GetChild(i);
-                result.AddRange(GetChildrenDeeply(child, depth - 1));
-            }
-
-            return result;
         }
     }
 }

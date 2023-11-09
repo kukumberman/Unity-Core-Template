@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -50,5 +51,25 @@ public static class UnityExtensions
         var sizeDelta = textTrasform.sizeDelta;
         sizeDelta.x = preferredSize.x;
         textTrasform.sizeDelta = sizeDelta;
+    }
+
+    public static List<Transform> GetChildrenDeeply(Transform parent, int depth)
+    {
+        var result = new List<Transform>();
+
+        result.Add(parent);
+
+        if (depth <= 0)
+        {
+            return result;
+        }
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            var child = parent.GetChild(i);
+            result.AddRange(GetChildrenDeeply(child, depth - 1));
+        }
+
+        return result;
     }
 }
