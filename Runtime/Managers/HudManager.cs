@@ -34,8 +34,37 @@ namespace Game.Managers
         }
 
         public bool IsShowed<T>()
+            where T : Mediator
         {
             return _openedHud is T || _additionalHuds.Exists(temp => temp is T);
+        }
+
+        public bool IsShowed(Type type)
+        {
+            if (type == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            if (!typeof(Mediator).IsAssignableFrom(type))
+            {
+                throw new ArgumentException();
+            }
+
+            if (_openedHud != null && _openedHud.GetType() == type)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < _additionalHuds.Count; i++)
+            {
+                if (_additionalHuds[i].GetType() == type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool IsSingleOpened()
@@ -109,6 +138,34 @@ namespace Game.Managers
                 hud.Unmediate();
                 _additionalHuds.RemoveAt(i);
             }
+        }
+
+        public bool HideAdditional(Type type)
+        {
+            if (type == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            if (!typeof(Mediator).IsAssignableFrom(type))
+            {
+                throw new ArgumentException();
+            }
+
+            for (int i = _additionalHuds.Count - 1; i >= 0; i--)
+            {
+                var hud = _additionalHuds[i];
+
+                if (hud.GetType() == type)
+                {
+                    hud.InternalHide();
+                    hud.Unmediate();
+                    _additionalHuds.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void HideAllAdditionals()
