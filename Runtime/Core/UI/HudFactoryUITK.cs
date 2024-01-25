@@ -2,7 +2,6 @@ using Game.Enums;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -35,11 +34,17 @@ namespace Game.Core.UI
             }
 
             var root = _document.rootVisualElement.Q<VisualElement>("root");
-            var templateView = treeAsset.Instantiate().Children().ElementAt(0);
+            var templateView = treeAsset.Instantiate()[0];
 
             var view = _factoryMap[hud.ViewType]();
             view.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
             view.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+
+            foreach (var styleSheet in treeAsset.stylesheets)
+            {
+                view.styleSheets.Add(styleSheet);
+            }
+
             view.Add(templateView);
 
             var methodInfo = view.GetType()
