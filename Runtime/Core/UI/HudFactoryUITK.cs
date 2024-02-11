@@ -1,4 +1,5 @@
 using Game.Enums;
+using Game.UI.Hud;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -39,6 +40,8 @@ namespace Game.Core.UI
             var view = _factoryMap[hud.ViewType]();
             view.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
             view.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+            view.style.position = new StyleEnum<Position>(Position.Absolute);
+            view.pickingMode = PickingMode.Ignore;
 
             foreach (var styleSheet in treeAsset.stylesheets)
             {
@@ -52,6 +55,8 @@ namespace Game.Core.UI
             methodInfo.Invoke(view, null);
             root.Add(view);
 
+            Sort(root);
+
             hud.Mediate(view);
             hud.InternalShow();
         }
@@ -62,6 +67,19 @@ namespace Game.Core.UI
             {
                 _factoryMap.Add(type, element);
             }
+        }
+
+        private void Sort(VisualElement parent)
+        {
+            parent.Sort(Comparison);
+        }
+
+        private static int Comparison(VisualElement lhs, VisualElement rhs)
+        {
+            var lhsHud = lhs as BaseHudUITK;
+            var rhsHud = rhs as BaseHudUITK;
+
+            return lhsHud.HierarchyOrder - rhsHud.HierarchyOrder;
         }
     }
 }

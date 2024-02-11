@@ -6,6 +6,8 @@ namespace Game.UI.Hud
 {
     public interface IHud
     {
+        int HierarchyOrder { get; }
+
         bool IsActive { get; set; }
 
         void Remove();
@@ -13,6 +15,8 @@ namespace Game.UI.Hud
 
     public abstract class BaseHud : MonoBehaviour, IHud
     {
+        public virtual int HierarchyOrder => 0;
+
         public bool IsActive
         {
             get { return gameObject.activeSelf; }
@@ -21,6 +25,7 @@ namespace Game.UI.Hud
 
         public void Remove()
         {
+            transform.SetParent(null);
             Destroy(gameObject);
         }
 
@@ -77,6 +82,8 @@ namespace Game.UI.Hud
 
     public abstract class BaseHudUITK : VisualElement, IHud
     {
+        public virtual int HierarchyOrder => 0;
+
         public bool IsActive
         {
             get { return style.display != DisplayStyle.None; }

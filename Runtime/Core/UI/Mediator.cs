@@ -5,6 +5,7 @@ namespace Game.Core.UI
 {
     public abstract class Mediator
     {
+        [Obsolete]
         public virtual int HierarchyOrder => -1;
 
         public virtual bool CanPop()

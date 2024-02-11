@@ -30,17 +30,27 @@ namespace Game.Core.UI
             }
             var parent = _canvas.transform;
             var hudView = GameObject.Instantiate(hudPrefab, parent);
+
+            Sort(parent);
+
             hud.Mediate(hudView);
             hud.InternalShow();
+        }
 
-            //test Dima: sort others huds
-            if (hud.HierarchyOrder == -1)
+        private void Sort(Transform parent)
+        {
+            var existingHuds = parent.GetComponentsInChildren<BaseHud>();
+
+            if (existingHuds.Length != parent.childCount)
             {
-                hudView.transform.SetAsLastSibling();
+                Debug.LogWarning("<b>HudFactoryUGUI.Sort</b> hierarchy mismatch", parent);
             }
-            else
+
+            Array.Sort(existingHuds, (lhs, rhs) => lhs.HierarchyOrder - rhs.HierarchyOrder);
+
+            for (int i = 0; i < existingHuds.Length; i++)
             {
-                hudView.transform.SetSiblingIndex(hud.HierarchyOrder);
+                existingHuds[i].transform.SetSiblingIndex(i);
             }
         }
     }

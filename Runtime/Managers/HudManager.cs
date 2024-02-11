@@ -27,9 +27,9 @@ namespace Game.Managers
 
         public IHudFactory HudFactory => _hudFactory;
 
-        public HudManager(IHudFactory creator)
+        public HudManager(IHudFactory factory)
         {
-            _hudFactory = creator;
+            _hudFactory = factory;
             _additionalHuds = new List<Mediator>();
         }
 
