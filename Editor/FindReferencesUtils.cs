@@ -70,13 +70,16 @@ namespace UnityEditor
             public FindReferencesUtils.Result Result;
         }
 
-        [MenuItem("Tools/Clear References In Project")]
+        private const string kMenuItemNameClear = "Tools/Clear References In Project (Custom)";
+        private const string kMenuItemNameFind = "Assets/Find References In Project (Custom)";
+
+        [MenuItem(kMenuItemNameClear)]
         private static void ClearReferences()
         {
             _allFilesData.Clear();
         }
 
-        [MenuItem("Assets/Find References In Project")]
+        [MenuItem(kMenuItemNameFind)]
         private static void FindReferences()
         {
             var result = Find(Selection.objects);
@@ -86,7 +89,7 @@ namespace UnityEditor
             }
         }
 
-        [MenuItem("Assets/Find References In Project", true)]
+        [MenuItem(kMenuItemNameFind, true)]
         private static bool FindReferencesValidate()
         {
             return Selection.objects.Length >= 1;
